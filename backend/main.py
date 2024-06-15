@@ -37,6 +37,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "text/plain")
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(b"NJAIYYDS")
 
@@ -51,11 +52,13 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         content_type = self.headers['content-type']
         if not content_type:
             self.send_error(400, "Content-Type header is missing")
+            self.send_header("Access-Control-Allow-Origin", "*")
             return
 
         ctype, pdict = cgi.parse_header(content_type)
         if ctype != 'multipart/form-data':
             self.send_error(400, "Content-Type is not multipart/form-data")
+            self.send_header("Access-Control-Allow-Origin", "*")
             return
 
         pdict['boundary'] = bytes(pdict['boundary'], "utf-8")
@@ -98,6 +101,8 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         # Send a simple HTML response back
         self.send_response(200)
+        self.send_header("Content-Type", "text/plain")
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.wfile.write(b"Data received")
 
